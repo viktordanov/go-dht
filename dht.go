@@ -38,8 +38,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
-//
-DEBUG_ENABLED := os.Getenv("DEBUG")
+var DEBUG_ENABLED string = os.Getenv("DEBUG")
 
 // SensorType signify what sensor in use.
 type SensorType int
