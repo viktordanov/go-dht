@@ -39,7 +39,7 @@ import (
 )
 
 //
-const DEBUG_ENABLED = os.Getenv("DEBUG")
+DEBUG_ENABLED := os.Getenv("DEBUG")
 
 // SensorType signify what sensor in use.
 type SensorType int
