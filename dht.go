@@ -38,6 +38,9 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
+//
+const DEBUG_ENABLED = os.Getenv("DEBUG")
+
 // SensorType signify what sensor in use.
 type SensorType int
 
@@ -181,7 +184,9 @@ func decodeDHTxxPulses(sensorType SensorType, pulses []Pulse) (temperature float
 	if len(pulses) >= 82 && len(pulses) <= 85 {
 		pulses = pulses[len(pulses)-82:]
 	} else {
-		printPulseArrayForDebug(pulses)
+		if DEBUG_ENABLED {
+			printPulseArrayForDebug(pulses)
+		}
 		return -1, -1, fmt.Errorf("Can't decode pulse array received from "+
 			"DHTxx sensor, since incorrect length: %d", len(pulses))
 	}
@@ -228,11 +233,15 @@ func decodeDHTxxPulses(sensorType SensorType, pulses []Pulse) (temperature float
 			sum, calcSum, b0, b1, b2, b3))
 		return -1, -1, err
 	} else {
-		lg.Debugf("CRCs verified: checksum from sensor(%v) = calculated checksum(%v=%v+%v+%v+%v)",
-			sum, calcSum, b0, b1, b2, b3)
+		if DEBUG_ENABLED {
+			lg.Debugf("CRCs verified: checksum from sensor(%v) = calculated checksum(%v=%v+%v+%v+%v)",
+				sum, calcSum, b0, b1, b2, b3)
+		}
 	}
 	// debug output for 5 bytes
-	lg.Debugf("Decoded from DHTxx sensor: [%d, %d, %d, %d, %d]", b0, b1, b2, b3, sum)
+	if DEBUG_ENABLED {
+		lg.Debugf("Decoded from DHTxx sensor: [%d, %d, %d, %d, %d]", b0, b1, b2, b3, sum)
+	}
 	// extract temperature and humidity depending on sensor type
 	temperature, humidity = 0.0, 0.0
 	if sensorType == DHT11 {
@@ -295,7 +304,9 @@ func ReadDHTxx(sensorType SensorType, pin int,
 		return -1, -1, err
 	}
 	// output debug information
-	printPulseArrayForDebug(pulses)
+	if DEBUG_ENABLED {
+		printPulseArrayForDebug(pulses)
+	}
 	// decode pulses
 	temp, hum, err := decodeDHTxxPulses(sensorType, pulses)
 	if err != nil {
@@ -366,7 +377,9 @@ func ReadDHTxxWithContextAndRetry(parent context.Context, sensorType SensorType,
 		temp, hum, err := ReadDHTxx(sensorType, pin, boostPerfFlag)
 		if err != nil {
 			if retry > 0 {
-				lg.Warning(err)
+				if DEBUG_ENABLED {
+					lg.Warning(err)
+				}
 				retry--
 				retried++
 				select {

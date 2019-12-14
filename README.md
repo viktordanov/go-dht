@@ -1,3 +1,9 @@
+Disclaimer
+----------
+
+This is a fork of go-dht, solely making it possible to disable debugging.
+
+
 DHTxx temperature and humidity sensors
 ======================================
 
