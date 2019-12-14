@@ -183,7 +183,7 @@ func decodeDHTxxPulses(sensorType SensorType, pulses []Pulse) (temperature float
 	if len(pulses) >= 82 && len(pulses) <= 85 {
 		pulses = pulses[len(pulses)-82:]
 	} else {
-		if DEBUG_ENABLED {
+		if DEBUG_ENABLED == "true" {
 			printPulseArrayForDebug(pulses)
 		}
 		return -1, -1, fmt.Errorf("Can't decode pulse array received from "+
@@ -232,13 +232,13 @@ func decodeDHTxxPulses(sensorType SensorType, pulses []Pulse) (temperature float
 			sum, calcSum, b0, b1, b2, b3))
 		return -1, -1, err
 	} else {
-		if DEBUG_ENABLED {
+		if DEBUG_ENABLED == "true" {
 			lg.Debugf("CRCs verified: checksum from sensor(%v) = calculated checksum(%v=%v+%v+%v+%v)",
 				sum, calcSum, b0, b1, b2, b3)
 		}
 	}
 	// debug output for 5 bytes
-	if DEBUG_ENABLED {
+	if DEBUG_ENABLED == "true" {
 		lg.Debugf("Decoded from DHTxx sensor: [%d, %d, %d, %d, %d]", b0, b1, b2, b3, sum)
 	}
 	// extract temperature and humidity depending on sensor type
@@ -303,7 +303,7 @@ func ReadDHTxx(sensorType SensorType, pin int,
 		return -1, -1, err
 	}
 	// output debug information
-	if DEBUG_ENABLED {
+	if DEBUG_ENABLED == "true" {
 		printPulseArrayForDebug(pulses)
 	}
 	// decode pulses
@@ -376,7 +376,7 @@ func ReadDHTxxWithContextAndRetry(parent context.Context, sensorType SensorType,
 		temp, hum, err := ReadDHTxx(sensorType, pin, boostPerfFlag)
 		if err != nil {
 			if retry > 0 {
-				if DEBUG_ENABLED {
+				if DEBUG_ENABLED == "true" {
 					lg.Warning(err)
 				}
 				retry--
